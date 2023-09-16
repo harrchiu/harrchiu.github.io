@@ -1,0 +1,83 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.keyboard-top-circle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  border: 1px solid black;
+  border-radius: 100%;
+  background-color: rgb(240, 235, 224);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.keyboard-bottom-circle {
+  position: absolute;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  border: 1px solid black;
+  border-radius: 100%;
+  background-color: rgb(240, 235, 224);
+}
+.keyboard-rect {
+  position: absolute;
+  top: 20px;
+  width: 40px;
+  height: 20px;
+  border: 1px solid black;
+  border-bottom: none;
+  background-color: rgb(240, 235, 224);
+}
+
+.keyboard-key {
+  width: 50px;
+  height: 40px;
+  transform: rotateX(50deg);
+}
+
+.keyboard-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  gap: 5px;
+}
+
+.keyboard-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.main-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  width: 50%;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 20px;
+}
