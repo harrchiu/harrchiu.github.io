@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import keyPressSound0 from './assets/typewriter_key_0.mp3';
+import keyPressSound0 from './assets/typewriter_key_0.wav';
 import keyPressSound1 from './assets/typewriter_key_1.mp3';
+import keyPressSound2 from './assets/typewriter_key_2.wav';
+import keyPressFinished from './assets/typewriter_key_finished.wav';
 import { DEFAULT_KEYPRESS_MS, KBKey } from './KBKey';
 
-const KEYPRESS_SOUNDS = [keyPressSound0, keyPressSound1];
+const KEYPRESS_SOUNDS = [keyPressSound0, keyPressSound1, keyPressSound2];
 
 const keyboardKeys = [
   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-'],
@@ -34,7 +36,8 @@ interface IContent {
 const getTextElement = (
   content: IContent,
   charIndex: number,
-  overrideStyles: React.CSSProperties
+  overrideStyles: React.CSSProperties,
+  key: string
 ) => {
   if (!content) {
     return null;
@@ -56,13 +59,14 @@ const getTextElement = (
         target='_blank'
         rel='noopener noreferrer'
         className={className}
+        key={key}
       >
         {renderedText}
       </a>
     );
   }
   return (
-    <span style={style} className={className}>
+    <span style={style} className={className} key={key}>
       {renderedText}
     </span>
   );
@@ -77,20 +81,22 @@ function App() {
   const [keypressSpeed, setKeypressSpeed] = useState(1);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const [audiosPlaying, setAudiosPlaying] = useState(0);
+  const [hasFinishedSoundBeenPlayed, setHasFinishedSoundBeenPlayed] = useState(false);
 
   const fileContent: IContent[] = [
-    // { text: `Hello.\n\n`, speed: 0.4, postDelay: 400 },
-    // { text: `I am a `, speed: 3, postDelay: 1000 },
-    // { text: `typewriter`, speed: 1.3, postDelay: 200, bold: true, italic: true, glow: true },
-    // { text: `...`, speed: 0.5, postDelay: 1250 },
-
+    { text: `Hello.`, speed: 0.4, postDelay: 400 },
+    { text: `\n\nI am a `, speed: 3, postDelay: 1000 },
     {
-      text: `Hello.\n\n`,
-      speed: 1,
+      text: `typewriter`,
+      speed: 1.3,
+      postDelay: 200,
+      style: {
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+      },
+      glow: true,
     },
-    { text: `I am a `, speed: 50 },
-    { text: `typewriter`, speed: 50, glow: true },
-
+    { text: `...`, speed: 0.5, postDelay: 1250 },
     { text: ` made by Harrison. \n`, postDelay: 200, speed: 10 },
     { text: `That is all he wanted to do, thanks.\n\n`, speed: 20 },
 
@@ -110,9 +116,9 @@ function App() {
     },
     { text: `\n - his `, speed: 10 },
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
-    { text: `\n - his email (harrchiu@gmail.com)`, speed: 10 },
-    { text: `\n - my `, speed: 1, style: { fontStyle: 'italic' } },
-    { text: `origins`, speed: 1, url: `https://github.com/harrchiu/portfolio` },
+    { text: `\n - his email (harrchiu@gmail.com)\n -`, speed: 10 },
+    { text: ` my `, speed: 1, style: { fontStyle: 'italic' } },
+    { text: `origin`, speed: 1, url: `https://github.com/harrchiu/portfolio` },
   ];
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -120,17 +126,27 @@ function App() {
   };
 
   const playSound = (sound: string) => {
+    const isFinished =
+      typedState.contentIndex === fileContent.length - 1 &&
+      typedState.charIndex === fileContent.at(-1)!.text.length;
+    if (isFinished && !hasFinishedSoundBeenPlayed) {
+      setHasFinishedSoundBeenPlayed(true);
+      const audio = new Audio(keyPressFinished);
+      audio.play();
+      return;
+    }
+
     if (audiosPlaying >= 15) {
       return;
     }
 
-    //   setAudiosPlaying((prev) => prev + 1);
-    //   const audio = new Audio(sound);
-    //   audio.play();
+    setAudiosPlaying((prev) => prev + 1);
+    const audio = new Audio(sound);
+    audio.play();
 
-    //   audio.onended = () => {
-    //     setAudiosPlaying((prev) => prev - 1);
-    //   };
+    audio.onended = () => {
+      setAudiosPlaying((prev) => prev - 1);
+    };
   };
 
   // animation triggering
@@ -146,15 +162,15 @@ function App() {
 
     let renderedContent: React.ReactNode[] = [];
     let overrideStyles: React.CSSProperties = {};
-    for (let i = 0; i < contentIndex; i++) {
+    for (let i = 0; i <= contentIndex; i++) {
+      const textLength = i === contentIndex ? charIndex : fileContent[i].text.length;
       renderedContent.push(
-        getTextElement(fileContent[i], fileContent[i].text.length, overrideStyles)
+        getTextElement(fileContent[i], textLength, overrideStyles, i.toString())
       );
       if (fileContent[i].overrideStyles) {
         overrideStyles = fileContent[i].overrideStyles!;
       }
     }
-    renderedContent.push(getTextElement(fileContent[contentIndex], charIndex, overrideStyles));
     return renderedContent;
   };
 
@@ -213,10 +229,15 @@ function App() {
           onClick={() => {
             setTypedState((_) => ({
               contentIndex: fileContent.length - 1,
-              charIndex: fileContent.at(-1)!.text.length - 1,
+              charIndex: fileContent.at(-1)!.text.length,
             }));
+            handleKeyPress(fileContent.at(-1)!.text.at(-1)!.toUpperCase());
             timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
           }}
+          disabled={
+            typedState.contentIndex === fileContent.length - 1 &&
+            typedState.charIndex === fileContent.at(-1)!.text.length
+          }
         >
           Skip
         </button>
@@ -224,14 +245,13 @@ function App() {
       <div className='typed-paper'>{getRenderedContent()}</div>
       <div className='keyboard-area'>
         {keyboardKeys.map((row, rowId) => {
-          console.log(rowId);
           return (
             <div
               className='keyboard-row'
               key={`kb-row-${rowId}`}
               style={{ marginLeft: `${rowOffsets[rowId]}px` }}
             >
-              {row.map((key, colId) => {
+              {row.map((_, colId) => {
                 const text = keyboardKeys[rowId][colId];
                 return (
                   <KBKey
