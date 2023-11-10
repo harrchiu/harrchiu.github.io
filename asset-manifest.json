@@ -1,18 +1,19 @@
 {
   "files": {
     "main.css": "/static/css/main.d0ac2dd3.css",
-    "main.js": "/static/js/main.2420272a.js",
+    "main.js": "/static/js/main.d0e17574.js",
     "static/js/787.7da95b79.chunk.js": "/static/js/787.7da95b79.chunk.js",
     "static/media/TravelingTypewriter.ttf": "/static/media/TravelingTypewriter.4cfc1b2c4b5f9a2b68d6.ttf",
     "static/media/MyriadPro-Bold.otf": "/static/media/MyriadPro-Bold.debb99dedf379513aba6.otf",
     "static/media/typewriter_key_0.mp3": "/static/media/typewriter_key_0.a46bea84116a8b08c52b.mp3",
+    "static/media/typewriter_key_1.mp3": "/static/media/typewriter_key_1.c0cbaf7f38041cd67895.mp3",
     "index.html": "/index.html",
     "main.d0ac2dd3.css.map": "/static/css/main.d0ac2dd3.css.map",
-    "main.2420272a.js.map": "/static/js/main.2420272a.js.map",
+    "main.d0e17574.js.map": "/static/js/main.d0e17574.js.map",
     "787.7da95b79.chunk.js.map": "/static/js/787.7da95b79.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d0ac2dd3.css",
-    "static/js/main.2420272a.js"
+    "static/js/main.d0e17574.js"
   ]
 }
