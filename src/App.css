@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Special+Elite:regular,bold,italic&subset=latin,latin-ext');
 
+@font-face {
+  font-family: 'linkedin-font';
+  src: url('./assets/MyriadPro-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'typewriter';
+  src: url('./assets/TravelingTypewriter.ttf') format('truetype');
+}
+
 .App {
   display: flex;
   flex-direction: column;
@@ -101,7 +111,10 @@
   align-items: start;
   justify-content: center; */
 
-  font-family: 'Special Elite';
+  font-family: 'typewriter';
+  /* font-family: 'Special Elite'; */
+  /* font-family: 'Courier New', Courier, monospace; */
+
   display: inline-block;
 
   border: 1px solid black;
@@ -111,6 +124,10 @@
 
   text-wrap: wrap;
   white-space: pre-line;
+
+  font-size: 20px;
+
+  line-height: 1.4;
 }
 
 /* textual animation */

@@ -9,11 +9,13 @@ const KBKey: React.FC<{ text: string; isPressed: boolean; speed: number }> = ({
   isPressed,
   speed,
 }) => {
+  console.log('rendering key');
   return (
     <div
       className={`keyboard-key ${isPressed && 'roll-out'}`}
       style={{
         animationDuration: isPressed ? `${DEFAULT_KEYPRESS_MS / speed / 1000}s` : undefined,
+        // animationDuration: `${DEFAULT_KEYPRESS_MS / speed / 1000}s`,
       }}
     >
       <div className='keyboard-bottom-circle' />
@@ -49,17 +51,21 @@ interface IContent {
   url?: string;
 
   // styling
+  color?: string;
   bold?: boolean;
   italic?: boolean;
   glow?: boolean;
   underline?: boolean;
+  font?: string;
 }
 
 const getTextElement = (content: IContent, charIndex?: number) => {
   const style = {
+    color: content.color ?? undefined,
     fontWeight: content.bold ? 'bold' : undefined,
     fontStyle: content.italic ? 'italic' : undefined,
     textDecoration: content.underline ? 'underline' : undefined,
+    fontFamily: content.font ?? undefined,
   };
 
   const renderedText = content.text.slice(0, charIndex);
@@ -69,7 +75,7 @@ const getTextElement = (content: IContent, charIndex?: number) => {
     return (
       <a
         href={content.url}
-        style={style}
+        style={{ ...style, color: 'black' }}
         target='_blank'
         rel='noopener noreferrer'
         className={className}
@@ -92,29 +98,61 @@ function App() {
     // { text: `typewriter`, speed: 1.3, postDelay: 200, bold: true, italic: true, glow: true },
     // { text: `...`, speed: 0.5, postDelay: 1250 },
 
-    { text: `Hello.\n\n`, speed: 50 },
+    {
+      text: `Hello.\n\n`,
+      // speed: 50
+    },
     { text: `I am a `, speed: 50 },
     { text: `typewriter`, speed: 50, glow: true },
 
     { text: ` made by Harrison. \n`, postDelay: 200, speed: 10 },
     { text: `That is all he wanted to do, thanks.\n\n`, speed: 20 },
+
     { text: `Here is: `, speed: 10 },
     { text: `\n - his `, speed: 10 },
     { text: `resume`, speed: 10, url: `https://harrchiu.me/Harrison_Chiu_Resume.pdf` },
     { text: `\n - his `, speed: 10 },
-    { text: `linkedin`, speed: 10, url: `https://www.linkedin.com/in/harrchiu/` },
+
+    {
+      text: `LinkedIn`,
+      speed: 10,
+      url: `https://www.linkedin.com/in/harrchiu/`,
+      font: 'linkedin-font',
+    },
     { text: `\n - his `, speed: 10 },
-    { text: `github`, speed: 10, url: `https://github.com/harrchiu` },
+    { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
     { text: `\n - his email (harrchiu@gmail.com)`, speed: 10 },
     { text: `\n - my `, speed: 10, italic: true },
-    { text: `github??`, speed: 10, url: `https://github.com/harrchiu/portfolio` },
+    { text: `GitHub??`, speed: 10, url: `https://github.com/harrchiu/portfolio` },
   ];
 
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+  const [keyCounters, setKeyCounters] = useState<{ [key: string]: number }>({});
   const [typedState, setTypedState] = useState({
     contentIndex: 0,
     charIndex: 0,
   });
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // console.log(e.key);
+    // handleKeyPress(e.key.toUpperCase());
+    const newPressedKeys = new Set(pressedKeys);
+    newPressedKeys.add(e.key.toUpperCase());
+    setPressedKeys(newPressedKeys);
+  };
+  const handleKeyUp = (e: KeyboardEvent) => {
+    const newPressedKeys = new Set(pressedKeys);
+    newPressedKeys.delete(e.key.toUpperCase());
+    setPressedKeys(newPressedKeys);
+  };
+
+  // animation triggering
+  const handleKeyPress = (key: string) => {
+    setKeyCounters((prevKeyCounters) => ({
+      ...prevKeyCounters,
+      [key]: (prevKeyCounters[key] ?? 0) + 1,
+    }));
+  };
 
   const getRenderedContent = () => {
     const { contentIndex, charIndex } = typedState;
@@ -125,17 +163,6 @@ function App() {
     }
     renderedContent.push(getTextElement(fileContent[contentIndex], charIndex));
     return renderedContent;
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    const newPressedKeys = new Set(pressedKeys);
-    newPressedKeys.add(e.key.toUpperCase());
-    setPressedKeys(newPressedKeys);
-  };
-  const handleKeyUp = (e: KeyboardEvent) => {
-    const newPressedKeys = new Set(pressedKeys);
-    newPressedKeys.delete(e.key.toUpperCase());
-    setPressedKeys(newPressedKeys);
   };
 
   useEffect(() => {
@@ -188,7 +215,7 @@ function App() {
                   <KBKey
                     text={text}
                     isPressed={pressedKeys.has(text)}
-                    key={`kb-key-${text}`}
+                    key={`kb-key-${text}-${keyCounters[text] ?? 0}}`}
                     speed={1}
                   />
                 );
