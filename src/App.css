@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Special+Elite:regular,bold,italic&subset=latin,latin-ext');
+
 .App {
   display: flex;
   flex-direction: column;
@@ -15,7 +17,7 @@
   0% {
     transform: translateY(0) rotateX(50deg);
   }
-  20% {
+  90% {
     transform: translateY(30px) rotateX(50deg);
   }
   100% {
@@ -24,7 +26,7 @@
 }
 
 .roll-out {
-  animation: 0.5s rollout;
+  animation: rollout;
 }
 
 .keyboard-top-circle {
@@ -94,10 +96,13 @@
   bottom: 50%;
   width: 500px;
 
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: center;
+  justify-content: center; */
+
+  font-family: 'Special Elite';
+  display: inline-block;
 
   border: 1px solid black;
   border-bottom: none;
@@ -106,4 +111,23 @@
 
   text-wrap: wrap;
   white-space: pre-line;
+}
+
+/* textual animation */
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.glowing-text {
+  padding-right: 4px; /*prevent cutoff*/
+  background: linear-gradient(45deg, blue, red);
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: glow 1s ease-in-out infinite;
 }
