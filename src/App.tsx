@@ -73,6 +73,7 @@ const getTextElement = (
 };
 
 function App() {
+  const [isPageActive, setIsPageActive] = useState(false);
   const [keyCounters, setKeyCounters] = useState<{ [key: string]: number }>({});
   const [typedState, setTypedState] = useState({
     contentIndex: 0,
@@ -84,8 +85,10 @@ function App() {
   const [hasFinishedSoundBeenPlayed, setHasFinishedSoundBeenPlayed] = useState(false);
 
   const fileContent: IContent[] = [
-    { text: `Hello.`, speed: 0.4, postDelay: 400 },
-    { text: `\n\nI am a `, speed: 3, postDelay: 1000 },
+    { text: `H`, speed: 0.4, postDelay: 650 },
+    { text: `ello`, speed: 1, postDelay: 100 },
+    { text: `.`, speed: 0.4, postDelay: 400 },
+    { text: `\n\nI am a `, speed: 3, postDelay: 800 },
     {
       text: `typewriter`,
       speed: 1.3,
@@ -97,7 +100,7 @@ function App() {
       glow: true,
     },
     { text: `...`, speed: 0.5, postDelay: 1250 },
-    { text: ` made by Harrison. \n`, postDelay: 200, speed: 10 },
+    { text: ` made by Harrison. \n`, postDelay: 400, speed: 10 },
     { text: `That is all he wanted to do, thanks.\n\n`, speed: 20 },
 
     {
@@ -118,11 +121,19 @@ function App() {
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
     { text: `\n - his email (harrchiu@gmail.com)\n -`, speed: 10 },
     { text: ` my `, speed: 1, style: { fontStyle: 'italic' } },
-    { text: `origin`, speed: 1, url: `https://github.com/harrchiu/portfolio` },
+    { text: `origin`, speed: 1, url: `https://github.com/harrchiu/portfolio`, postDelay: 500 },
+    {
+      text: ` (I'm not complete yet so come back soon and I'll probably have cloth`,
+      speed: 20,
+      style: { fontSize: 14 },
+    },
+    { text: `es`, style: { fontSize: 14 }, postDelay: 200 },
+    { text: `)`, style: { fontSize: 14 } },
   ];
 
   const handleKeyDown = (e: KeyboardEvent) => {
     handleKeyPress(e.key.toUpperCase());
+    setIsPageActive(true);
   };
 
   const playSound = (sound: string) => {
@@ -136,12 +147,13 @@ function App() {
       return;
     }
 
-    if (audiosPlaying >= 15) {
+    if (audiosPlaying >= 10) {
       return;
     }
 
     setAudiosPlaying((prev) => prev + 1);
     const audio = new Audio(sound);
+    audio.volume = 0.85 - Math.pow(audiosPlaying / 15, 2);
     audio.play();
 
     audio.onended = () => {
@@ -176,6 +188,9 @@ function App() {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', () => {
+      setIsPageActive(true);
+    });
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
@@ -183,6 +198,10 @@ function App() {
 
   // time out to gradually show the filestring as if it's being typed
   useEffect(() => {
+    if (!isPageActive) {
+      return;
+    }
+
     localStorage.setItem('numVisits', (Number(localStorage.getItem('numVisits')) + 1).toString());
 
     let timeout = 0;
@@ -215,14 +234,21 @@ function App() {
         );
       }
     }
-  }, []);
+  }, [isPageActive]);
 
   useEffect(() => {
-    playSound(KEYPRESS_SOUNDS[Math.floor(Math.random() * KEYPRESS_SOUNDS.length)]);
+    if (isPageActive) {
+      playSound(KEYPRESS_SOUNDS[Math.floor(Math.random() * KEYPRESS_SOUNDS.length)]);
+    }
   }, [keyCounters]);
 
   return (
     <div className='App'>
+      {!isPageActive && (
+        <div className='active-prompt'>
+          <div className='active-prompt__text'>Click anywhere to start the typewriter!</div>
+        </div>
+      )}
       {Number(localStorage.getItem('numVisits')) > 1 && (
         <button
           className='skip-button'

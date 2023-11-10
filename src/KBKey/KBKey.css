@@ -51,7 +51,7 @@
   font-size: 20px;
   border: 1px solid black;
   border-radius: 100%;
-  background-color: rgb(240, 235, 224);
+  background-color: var(--beige-pastel);
 }
 
 .keyboard-key-top-circle {
@@ -63,7 +63,7 @@
   font-size: 20px;
   border: 1px solid black;
   border-radius: 100%;
-  background-color: rgb(240, 235, 224);
+  background-color: var(--beige-pastel);
 
   display: flex;
   flex-direction: column;
@@ -80,5 +80,5 @@
   height: 20px;
   border: 1px solid black;
   border-bottom: none;
-  background-color: rgb(240, 235, 224);
+  background-color: var(--beige-pastel);
 }
