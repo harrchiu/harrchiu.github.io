@@ -24,25 +24,25 @@ interface IContent {
   url?: string;
 
   // styling
-  color?: string;
-  bold?: boolean;
-  italic?: boolean;
+  style?: React.CSSProperties;
   glow?: boolean;
-  underline?: boolean;
-  font?: string;
+
+  // perma styles until changed again
+  overrideStyles?: React.CSSProperties;
 }
 
-const getTextElement = (content: IContent, charIndex?: number) => {
+const getTextElement = (
+  content: IContent,
+  charIndex: number,
+  overrideStyles: React.CSSProperties
+) => {
   if (!content) {
     return null;
   }
 
   const style = {
-    color: content.color ?? undefined,
-    fontWeight: content.bold ? 'bold' : undefined,
-    fontStyle: content.italic ? 'italic' : undefined,
-    textDecoration: content.underline ? 'underline' : undefined,
-    fontFamily: content.font ?? undefined,
+    ...overrideStyles,
+    ...content.style,
   };
 
   const renderedText = content.text.slice(0, charIndex);
@@ -52,7 +52,7 @@ const getTextElement = (content: IContent, charIndex?: number) => {
     return (
       <a
         href={content.url}
-        style={{ ...style, color: 'black' }}
+        style={{ ...style }}
         target='_blank'
         rel='noopener noreferrer'
         className={className}
@@ -69,6 +69,15 @@ const getTextElement = (content: IContent, charIndex?: number) => {
 };
 
 function App() {
+  const [keyCounters, setKeyCounters] = useState<{ [key: string]: number }>({});
+  const [typedState, setTypedState] = useState({
+    contentIndex: 0,
+    charIndex: 0,
+  });
+  const [keypressSpeed, setKeypressSpeed] = useState(1);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+  const [audiosPlaying, setAudiosPlaying] = useState(0);
+
   const fileContent: IContent[] = [
     // { text: `Hello.\n\n`, speed: 0.4, postDelay: 400 },
     // { text: `I am a `, speed: 3, postDelay: 1000 },
@@ -85,31 +94,26 @@ function App() {
     { text: ` made by Harrison. \n`, postDelay: 200, speed: 10 },
     { text: `That is all he wanted to do, thanks.\n\n`, speed: 20 },
 
-    { text: `Here is: `, speed: 10 },
+    {
+      text: `Here is: `,
+      speed: 10,
+      overrideStyles: { lineHeight: 1.4, fontSize: 17 },
+    },
     { text: `\n - his `, speed: 10 },
-    { text: `resume`, speed: 10, url: `https://harrchiu.me/Harrison_Chiu_Resume.pdf` },
+    { text: `resume`, speed: 10, url: `https://harrchiu.github.io/Harrison_Chiu_Resume.pdf` },
     { text: `\n - his `, speed: 10 },
     {
       text: `LinkedIn`,
       speed: 10,
       url: `https://www.linkedin.com/in/harrchiu/`,
-      font: 'linkedin-font',
+      style: { fontFamily: 'linkedin-font' },
     },
     { text: `\n - his `, speed: 10 },
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
     { text: `\n - his email (harrchiu@gmail.com)`, speed: 10 },
-    { text: `\n - my `, speed: 1, italic: true },
-    { text: `GitHub??`, speed: 1, url: `https://github.com/harrchiu/portfolio` },
+    { text: `\n - my `, speed: 1, style: { fontStyle: 'italic' } },
+    { text: `origins`, speed: 1, url: `https://github.com/harrchiu/portfolio` },
   ];
-
-  const [keyCounters, setKeyCounters] = useState<{ [key: string]: number }>({});
-  const [keypressSpeed, setKeypressSpeed] = useState(1);
-  const [audiosPlaying, setAudiosPlaying] = useState(0);
-  const [typedState, setTypedState] = useState({
-    contentIndex: 0,
-    charIndex: 0,
-  });
-  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   const handleKeyDown = (e: KeyboardEvent) => {
     handleKeyPress(e.key.toUpperCase());
@@ -141,10 +145,16 @@ function App() {
     const { contentIndex, charIndex } = typedState;
 
     let renderedContent: React.ReactNode[] = [];
+    let overrideStyles: React.CSSProperties = {};
     for (let i = 0; i < contentIndex; i++) {
-      renderedContent.push(getTextElement(fileContent[i]));
+      renderedContent.push(
+        getTextElement(fileContent[i], fileContent[i].text.length, overrideStyles)
+      );
+      if (fileContent[i].overrideStyles) {
+        overrideStyles = fileContent[i].overrideStyles!;
+      }
     }
-    renderedContent.push(getTextElement(fileContent[contentIndex], charIndex));
+    renderedContent.push(getTextElement(fileContent[contentIndex], charIndex, overrideStyles));
     return renderedContent;
   };
 
