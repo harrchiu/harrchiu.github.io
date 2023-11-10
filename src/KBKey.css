@@ -1,0 +1,84 @@
+@keyframes rollout {
+  0% {
+    transform: translateY(0) rotateX(50deg);
+  }
+  50% {
+    transform: translateY(20px) rotateX(50deg);
+  }
+  100% {
+    transform: translateY(0) rotateX(50deg);
+  }
+}
+
+:root {
+  --key-dim: 40px;
+}
+
+.roll-out {
+  animation: rollout;
+}
+
+.keyboard-key {
+  width: 55px;
+  height: 40px;
+  transform: rotateX(50deg);
+  cursor: pointer;
+}
+
+.keyboard-key-rod {
+  --rod-width: 2px;
+
+  z-index: 1;
+  /* border-top:  50%; */
+
+  position: absolute;
+
+  bottom: 20px;
+  width: var(--rod-width);
+  left: calc(var(--key-dim) / 2 - var(--rod-width) / 2);
+  height: 200px;
+  border: 1px solid black;
+  border-bottom: none;
+  background-color: black;
+}
+
+.keyboard-key-bottom-circle {
+  z-index: 100;
+  position: absolute;
+  top: 20px;
+  width: var(--key-dim);
+  height: var(--key-dim);
+  font-size: 20px;
+  border: 1px solid black;
+  border-radius: 100%;
+  background-color: rgb(240, 235, 224);
+}
+
+.keyboard-key-top-circle {
+  z-index: 100;
+
+  position: absolute;
+  width: var(--key-dim);
+  height: var(--key-dim);
+  font-size: 20px;
+  border: 1px solid black;
+  border-radius: 100%;
+  background-color: rgb(240, 235, 224);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.keyboard-key-rect {
+  z-index: 100;
+
+  position: absolute;
+  top: 20px;
+  width: var(--key-dim);
+  height: 20px;
+  border: 1px solid black;
+  border-bottom: none;
+  background-color: rgb(240, 235, 224);
+}

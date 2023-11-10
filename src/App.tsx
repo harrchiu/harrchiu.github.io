@@ -1,29 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import { render } from '@testing-library/react';
+import keyPressSound0 from './assets/typewriter_key_0.mp3';
+import keyPressSound1 from './assets/typewriter_key_1.mp3';
+import { DEFAULT_KEYPRESS_MS, KBKey } from './KBKey';
 
-const DEFAULT_KEYPRESS_MS = 200;
-
-const KBKey: React.FC<{ text: string; isPressed: boolean; speed: number }> = ({
-  text,
-  isPressed,
-  speed,
-}) => {
-  console.log('rendering key');
-  return (
-    <div
-      className={`keyboard-key ${isPressed && 'roll-out'}`}
-      style={{
-        animationDuration: isPressed ? `${DEFAULT_KEYPRESS_MS / speed / 1000}s` : undefined,
-        // animationDuration: `${DEFAULT_KEYPRESS_MS / speed / 1000}s`,
-      }}
-    >
-      <div className='keyboard-bottom-circle' />
-      <div className='keyboard-rect' />
-      <div className='keyboard-top-circle'>{text}</div>
-    </div>
-  );
-};
+const KEYPRESS_SOUNDS = [keyPressSound0, keyPressSound1];
 
 const keyboardKeys = [
   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-'],
@@ -33,14 +14,6 @@ const keyboardKeys = [
   [' '],
 ];
 const rowOffsets = [0, 0, 100, 40, 0, 50];
-
-// programatically make dictionary of key positions
-// let keyPositions: { [key: string]: { row: number; col: number } } = {};
-// keyboardKeys.forEach((row, rowId) => {
-//   row.forEach((key, colId) => {
-//     keyPositions[key] = { row: rowId, col: colId };
-//   });
-// });
 
 interface IContent {
   text: string;
@@ -60,6 +33,10 @@ interface IContent {
 }
 
 const getTextElement = (content: IContent, charIndex?: number) => {
+  if (!content) {
+    return null;
+  }
+
   const style = {
     color: content.color ?? undefined,
     fontWeight: content.bold ? 'bold' : undefined,
@@ -93,14 +70,14 @@ const getTextElement = (content: IContent, charIndex?: number) => {
 
 function App() {
   const fileContent: IContent[] = [
-    // { text: `Hello.\n\n`, speed: 2, postDelay: 400 },
+    // { text: `Hello.\n\n`, speed: 0.4, postDelay: 400 },
     // { text: `I am a `, speed: 3, postDelay: 1000 },
     // { text: `typewriter`, speed: 1.3, postDelay: 200, bold: true, italic: true, glow: true },
     // { text: `...`, speed: 0.5, postDelay: 1250 },
 
     {
       text: `Hello.\n\n`,
-      // speed: 50
+      speed: 1,
     },
     { text: `I am a `, speed: 50 },
     { text: `typewriter`, speed: 50, glow: true },
@@ -112,7 +89,6 @@ function App() {
     { text: `\n - his `, speed: 10 },
     { text: `resume`, speed: 10, url: `https://harrchiu.me/Harrison_Chiu_Resume.pdf` },
     { text: `\n - his `, speed: 10 },
-
     {
       text: `LinkedIn`,
       speed: 10,
@@ -122,28 +98,35 @@ function App() {
     { text: `\n - his `, speed: 10 },
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
     { text: `\n - his email (harrchiu@gmail.com)`, speed: 10 },
-    { text: `\n - my `, speed: 10, italic: true },
-    { text: `GitHub??`, speed: 10, url: `https://github.com/harrchiu/portfolio` },
+    { text: `\n - my `, speed: 1, italic: true },
+    { text: `GitHub??`, speed: 1, url: `https://github.com/harrchiu/portfolio` },
   ];
 
-  const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
   const [keyCounters, setKeyCounters] = useState<{ [key: string]: number }>({});
+  const [keypressSpeed, setKeypressSpeed] = useState(1);
+  const [audiosPlaying, setAudiosPlaying] = useState(0);
   const [typedState, setTypedState] = useState({
     contentIndex: 0,
     charIndex: 0,
   });
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    // console.log(e.key);
-    // handleKeyPress(e.key.toUpperCase());
-    const newPressedKeys = new Set(pressedKeys);
-    newPressedKeys.add(e.key.toUpperCase());
-    setPressedKeys(newPressedKeys);
+    handleKeyPress(e.key.toUpperCase());
   };
-  const handleKeyUp = (e: KeyboardEvent) => {
-    const newPressedKeys = new Set(pressedKeys);
-    newPressedKeys.delete(e.key.toUpperCase());
-    setPressedKeys(newPressedKeys);
+
+  const playSound = (sound: string) => {
+    if (audiosPlaying >= 15) {
+      return;
+    }
+
+    //   setAudiosPlaying((prev) => prev + 1);
+    //   const audio = new Audio(sound);
+    //   audio.play();
+
+    //   audio.onended = () => {
+    //     setAudiosPlaying((prev) => prev - 1);
+    //   };
   };
 
   // animation triggering
@@ -167,42 +150,71 @@ function App() {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
     };
   });
 
   // time out to gradually show the filestring as if it's being typed
   useEffect(() => {
+    localStorage.setItem('numVisits', (Number(localStorage.getItem('numVisits')) + 1).toString());
+
     let timeout = 0;
     for (let i = 0; i < fileContent.length; i++) {
       for (const char of fileContent[i].text) {
-        timeout += DEFAULT_KEYPRESS_MS / (fileContent[i]?.speed ?? 1);
-        setTimeout(() => {
-          const newPressedKeys = new Set(pressedKeys);
-          newPressedKeys.add(char.toUpperCase());
-          setPressedKeys(newPressedKeys);
-          setTypedState((prev) => ({ ...prev, charIndex: prev.charIndex + 1 }));
-        }, timeout);
+        const charSpeed = fileContent[i]?.speed ?? 1;
+        timeout += DEFAULT_KEYPRESS_MS / charSpeed;
+        // timeout += Math.random() * 50;
+        timeoutsRef.current.push(
+          setTimeout(() => {
+            setKeypressSpeed(charSpeed);
+            handleKeyPress(char.toUpperCase());
+            setKeypressSpeed(1);
+            setTypedState((prev) => ({ ...prev, charIndex: prev.charIndex + 1 }));
+          }, timeout)
+        );
       }
       timeout += fileContent[i]?.postDelay ?? 0;
 
       // set timeout for next content
       if (i !== fileContent.length - 1) {
-        setTimeout(() => {
-          setTypedState((prev) => ({ ...prev, contentIndex: prev.contentIndex + 1, charIndex: 0 }));
-        }, timeout);
+        timeoutsRef.current.push(
+          setTimeout(() => {
+            setTypedState((prev) => ({
+              ...prev,
+              contentIndex: prev.contentIndex + 1,
+              charIndex: 0,
+            }));
+          }, timeout)
+        );
       }
     }
   }, []);
 
+  useEffect(() => {
+    playSound(KEYPRESS_SOUNDS[Math.floor(Math.random() * KEYPRESS_SOUNDS.length)]);
+  }, [keyCounters]);
+
   return (
     <div className='App'>
+      {Number(localStorage.getItem('numVisits')) > 1 && (
+        <button
+          className='skip-button'
+          onClick={() => {
+            setTypedState((_) => ({
+              contentIndex: fileContent.length - 1,
+              charIndex: fileContent.at(-1)!.text.length - 1,
+            }));
+            timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+          }}
+        >
+          Skip
+        </button>
+      )}
       <div className='typed-paper'>{getRenderedContent()}</div>
       <div className='keyboard-area'>
         {keyboardKeys.map((row, rowId) => {
+          console.log(rowId);
           return (
             <div
               className='keyboard-row'
@@ -214,9 +226,11 @@ function App() {
                 return (
                   <KBKey
                     text={text}
-                    isPressed={pressedKeys.has(text)}
                     key={`kb-key-${text}-${keyCounters[text] ?? 0}}`}
-                    speed={1}
+                    // do not render if not in map (initial render)
+                    renderPress={text in keyCounters}
+                    speed={keypressSpeed}
+                    onClick={() => handleKeyPress(text)}
                   />
                 );
               })}
