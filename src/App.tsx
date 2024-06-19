@@ -14,8 +14,8 @@ const keyboardKeys = [
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'"],
   ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.'],
   [' '],
-];
-const rowOffsets = [0, 0, 100, 40, 0, 50];
+].reverse();
+const rowOffsets = [0, 0, 100, 40, 40].reverse();
 
 interface IContent {
   text: string;
@@ -30,6 +30,7 @@ interface IContent {
   glow?: boolean;
 
   // perma styles until changed again
+  // but only takes effect on the NEXT one........
   overrideStyles?: React.CSSProperties;
 }
 
@@ -101,7 +102,7 @@ function App() {
     },
     { text: `...`, speed: 0.5, postDelay: 1250 },
     { text: ` made by Harrison. \n`, postDelay: 400, speed: 10 },
-    { text: `That is all he wanted to do, thanks.\n\n`, speed: 20 },
+    { text: `That's all he wanted to do, thanks.\n\n`, speed: 20 },
 
     {
       text: `Here is: `,
@@ -119,16 +120,22 @@ function App() {
     },
     { text: `\n - his `, speed: 10 },
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
-    { text: `\n - his email (harrchiu@gmail.com)\n -`, speed: 10 },
-    { text: ` my `, speed: 1, style: { fontStyle: 'italic' } },
-    { text: `origin`, speed: 1, url: `https://github.com/harrchiu/portfolio`, postDelay: 500 },
+    { text: `\n - his email (harrchiu@gmail.com)\n`, speed: 10 },
+    { text: `- my `, speed: 8, style: { fontStyle: 'italic' } },
+    { text: `origin`, speed: 8, url: `https://github.com/harrchiu/portfolio` },
+
+    { text: `\n- `, speed: 8, postDelay: 150 },
     {
-      text: ` (I'm not complete yet so come back soon and I'll probably have cloth`,
-      speed: 20,
-      style: { fontSize: 14 },
+      text: `hoarder.`,
+      speed: 1,
+      url: `https://bit.ly/hrdr`,
+      style: { fontWeight: 'bold' },
+      postDelay: 1000,
     },
-    { text: `es`, style: { fontSize: 14 }, postDelay: 200 },
-    { text: `)`, style: { fontSize: 14 } },
+
+    { text: ` - (thanks for playi`, style: { fontSize: 14 }, speed: 15 },
+    { text: `ng`, style: { fontSize: 14 }, speed: 3, postDelay: 350 },
+    { text: `)`, style: { fontSize: 14 }, speed: 3 },
   ];
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -143,6 +150,7 @@ function App() {
     if (isFinished && !hasFinishedSoundBeenPlayed) {
       setHasFinishedSoundBeenPlayed(true);
       const audio = new Audio(keyPressFinished);
+      audio.volume = 1.0;
       audio.play();
       return;
     }
@@ -176,6 +184,7 @@ function App() {
     let overrideStyles: React.CSSProperties = {};
     for (let i = 0; i <= contentIndex; i++) {
       const textLength = i === contentIndex ? charIndex : fileContent[i].text.length;
+      console.log(fileContent[i], overrideStyles);
       renderedContent.push(
         getTextElement(fileContent[i], textLength, overrideStyles, i.toString())
       );

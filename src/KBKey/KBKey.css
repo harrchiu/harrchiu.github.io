@@ -12,6 +12,7 @@
 
 :root {
   --key-dim: 40px;
+  --space-key-dim: calc(var(--key-dim) * 10);
 }
 
 .roll-out {
@@ -28,7 +29,7 @@
 .keyboard-key-rod {
   --rod-width: 2px;
 
-  z-index: 1;
+  z-index: -999;
   /* border-top:  50%; */
 
   position: absolute;
@@ -50,7 +51,7 @@
   height: var(--key-dim);
   font-size: 20px;
   border: 1px solid black;
-  border-radius: 100%;
+  border-radius: 20px;
   background-color: var(--beige-pastel);
 }
 
@@ -62,7 +63,7 @@
   height: var(--key-dim);
   font-size: 20px;
   border: 1px solid black;
-  border-radius: 100%;
+  border-radius: 20px;
   background-color: var(--beige-pastel);
 
   display: flex;
@@ -81,4 +82,11 @@
   border: 1px solid black;
   border-bottom: none;
   background-color: var(--beige-pastel);
+}
+
+.space-key {
+  width: var(--space-key-dim);
+
+  /* has to translate the extra width amount compared to normal key width */
+  transform: translate(calc((var(--space-key-dim) - var(--key-dim)) / -2), 8px);
 }

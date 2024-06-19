@@ -9,6 +9,7 @@ const KBKey: React.FC<{
   renderPress: boolean;
   onClick: () => void;
 }> = ({ text, speed, renderPress, onClick }) => {
+  const spaceCls = text === ' ' ? 'space-key' : '';
   return (
     <div
       className={`keyboard-key ${renderPress && 'roll-out'}`}
@@ -19,9 +20,9 @@ const KBKey: React.FC<{
       onClick={onClick}
     >
       {/* <div className='keyboard-key-rod' /> */}
-      <div className='keyboard-key-bottom-circle' />
-      <div className='keyboard-key-rect' />
-      <div className='keyboard-key-top-circle'>{text}</div>
+      <div className={`keyboard-key-bottom-circle ${spaceCls}`} />
+      <div className={`keyboard-key-rect ${spaceCls}`} />
+      <div className={`keyboard-key-top-circle ${spaceCls}`}>{text}</div>
     </div>
   );
 };
