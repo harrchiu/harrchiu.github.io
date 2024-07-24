@@ -121,8 +121,8 @@ function App() {
     { text: `\n - his `, speed: 10 },
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
     { text: `\n - his email (harrchiu@gmail.com)\n`, speed: 10 },
-    { text: `- my `, speed: 8, style: { fontStyle: 'italic' } },
-    { text: `origin`, speed: 8, url: `https://github.com/harrchiu/portfolio` },
+    { text: `- `, speed: 8},
+    { text: `me`, speed: 2, url: `https://github.com/harrchiu/portfolio` },
 
     { text: `\n- `, speed: 8, postDelay: 150 },
     {

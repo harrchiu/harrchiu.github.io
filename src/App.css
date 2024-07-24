@@ -36,7 +36,8 @@
   padding-bottom: 350px;
   font-size: 30px;
   color: var(--beige-pastel);
-  font-family: 'typewriter';
+  font-family: 'Special Elite';
+  line-height: 150%;
   width: 400px;
   text-align: center;
 }
@@ -48,7 +49,7 @@
   padding: 5px 10px;
   border-radius: 10px;
   cursor: pointer;
-  font-family: 'typewriter';
+  font-family: 'Special Elite';
 }
 
 .keyboard-row {
