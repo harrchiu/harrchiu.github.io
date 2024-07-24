@@ -14,8 +14,8 @@ const keyboardKeys = [
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'"],
   ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.'],
   [' '],
-].reverse();
-const rowOffsets = [0, 0, 100, 40, 40].reverse();
+];
+const rowOffsets = [0, 0, 100, 40, 40];
 
 interface IContent {
   text: string;
