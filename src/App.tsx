@@ -121,7 +121,7 @@ function App() {
     { text: `\n - his `, speed: 10 },
     { text: `GitHub`, speed: 10, url: `https://github.com/harrchiu` },
     { text: `\n - his email (harrchiu@gmail.com)\n`, speed: 10 },
-    { text: `- `, speed: 8},
+    { text: `- `, speed: 8 },
     { text: `me`, speed: 2, url: `https://github.com/harrchiu/portfolio` },
 
     { text: `\n- `, speed: 8, postDelay: 150 },
@@ -258,25 +258,23 @@ function App() {
           <div className='active-prompt__text'>Click anywhere to start the typewriter!</div>
         </div>
       )}
-      {Number(localStorage.getItem('numVisits')) > 1 && (
-        <button
-          className='skip-button'
-          onClick={() => {
-            setTypedState((_) => ({
-              contentIndex: fileContent.length - 1,
-              charIndex: fileContent.at(-1)!.text.length,
-            }));
-            handleKeyPress(fileContent.at(-1)!.text.at(-1)!.toUpperCase());
-            timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
-          }}
-          disabled={
-            typedState.contentIndex === fileContent.length - 1 &&
-            typedState.charIndex === fileContent.at(-1)!.text.length
-          }
-        >
-          Skip
-        </button>
-      )}
+      <button
+        className='skip-button'
+        onClick={() => {
+          setTypedState((_) => ({
+            contentIndex: fileContent.length - 1,
+            charIndex: fileContent.at(-1)!.text.length,
+          }));
+          handleKeyPress(fileContent.at(-1)!.text.at(-1)!.toUpperCase());
+          timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+        }}
+        disabled={
+          typedState.contentIndex === fileContent.length - 1 &&
+          typedState.charIndex === fileContent.at(-1)!.text.length
+        }
+      >
+        Skip
+      </button>
       <div className='typed-paper'>{getRenderedContent()}</div>
       <div className='keyboard-area'>
         {keyboardKeys.map((row, rowId) => {
