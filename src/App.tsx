@@ -126,9 +126,9 @@ function App() {
 
     { text: `\n- `, speed: 8, postDelay: 150 },
     {
-      text: `hoarder.`,
+      text: `hoarder 🟧`,
       speed: 1,
-      url: `https://bit.ly/hrdr`,
+      url: `https://playhoarder.com`,
       style: { fontWeight: 'bold' },
       postDelay: 1000,
     },
