@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.883f580b.css",
-    "main.js": "/static/js/main.1f318f29.js",
+    "main.js": "/static/js/main.2415fb61.js",
     "static/js/787.7da95b79.chunk.js": "/static/js/787.7da95b79.chunk.js",
     "static/media/typewriter_key_finished.wav": "/static/media/typewriter_key_finished.cb28603ac6264e077658.wav",
     "static/media/TravelingTypewriter.ttf": "/static/media/TravelingTypewriter.4cfc1b2c4b5f9a2b68d6.ttf",
@@ -11,11 +11,11 @@
     "static/media/typewriter_key_1.mp3": "/static/media/typewriter_key_1.c0cbaf7f38041cd67895.mp3",
     "index.html": "/index.html",
     "main.883f580b.css.map": "/static/css/main.883f580b.css.map",
-    "main.1f318f29.js.map": "/static/js/main.1f318f29.js.map",
+    "main.2415fb61.js.map": "/static/js/main.2415fb61.js.map",
     "787.7da95b79.chunk.js.map": "/static/js/787.7da95b79.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.883f580b.css",
-    "static/js/main.1f318f29.js"
+    "static/js/main.2415fb61.js"
   ]
 }
