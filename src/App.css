@@ -116,5 +116,5 @@
   background: linear-gradient(45deg, blue, red);
   -webkit-background-clip: text;
   color: transparent;
-  animation: glow 1s ease-in-out infinite;
+  animation: glow 2s ease-in-out infinite;
 }

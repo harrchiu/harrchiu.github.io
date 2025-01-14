@@ -126,15 +126,22 @@ function App() {
 
     { text: `\n- `, speed: 8, postDelay: 150 },
     {
-      text: `hoarder 🟧`,
-      speed: 1,
+      text: `playhoarder.com`,
+      speed: 1.4,
       url: `https://playhoarder.com`,
+      style: { fontWeight: 'bold' },
+    },
+    {
+      // need to make this fast because "🟧" needs a quick space right after
+      text: ` 🟧 `,
+      speed: 50,
+      // url: `https://playhoarder.com`,
       style: { fontWeight: 'bold' },
       postDelay: 1000,
     },
 
-    { text: ` - (thanks for playi`, style: { fontSize: 14 }, speed: 15 },
-    { text: `ng`, style: { fontSize: 14 }, speed: 3, postDelay: 350 },
+    { text: `- (thanks for playi`, style: { fontSize: 14 }, speed: 15 },
+    { text: `ng`, style: { fontSize: 14 }, speed: 3, postDelay: 500 },
     { text: `)`, style: { fontSize: 14 }, speed: 3 },
   ];
 
@@ -255,7 +262,7 @@ function App() {
     <div className='App'>
       {!isPageActive && (
         <div className='active-prompt'>
-          <div className='active-prompt__text'>Click anywhere to start the typewriter!</div>
+          <div className='active-prompt__text'>Click anywhere to start!</div>
         </div>
       )}
       <button
