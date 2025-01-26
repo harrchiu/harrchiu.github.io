@@ -85,6 +85,8 @@ function App() {
   const [audiosPlaying, setAudiosPlaying] = useState(0);
   const [hasFinishedSoundBeenPlayed, setHasFinishedSoundBeenPlayed] = useState(false);
 
+  const [testText, setTestText] = useState(' ');
+
   const fileContent: IContent[] = [
     { text: `H`, speed: 0.4, postDelay: 650 },
     { text: `ello`, speed: 1, postDelay: 100 },
@@ -142,10 +144,17 @@ function App() {
 
     { text: `- (thanks for playi`, style: { fontSize: 14 }, speed: 15 },
     { text: `ng`, style: { fontSize: 14 }, speed: 3, postDelay: 500 },
-    { text: `)`, style: { fontSize: 14 }, speed: 3 },
+    { text: `)\n`, style: { fontSize: 14 }, speed: 3 },
+    // { text: testText, glow: true, style: { fontSize: 10 }, speed: 3 },
   ];
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    const { contentIndex, charIndex } = typedState;
+    if (contentIndex == fileContent.length - 1 && e.key.length == 1 && charIndex < 50) {
+      // allow user to type ..?
+      setTestText(testText + e.key);
+      setTypedState((prev) => ({ ...prev, charIndex: prev.charIndex + 1 }));
+    }
     handleKeyPress(e.key.toUpperCase());
     setIsPageActive(true);
   };
@@ -191,7 +200,6 @@ function App() {
     let overrideStyles: React.CSSProperties = {};
     for (let i = 0; i <= contentIndex; i++) {
       const textLength = i === contentIndex ? charIndex : fileContent[i].text.length;
-      console.log(fileContent[i], overrideStyles);
       renderedContent.push(
         getTextElement(fileContent[i], textLength, overrideStyles, i.toString())
       );
@@ -258,11 +266,15 @@ function App() {
     }
   }, [keyCounters]);
 
+  const isSkipDisabled =
+    typedState.contentIndex === fileContent.length - 1 &&
+    typedState.charIndex === fileContent.at(-1)!.text.length;
+
   return (
     <div className='App'>
       {!isPageActive && (
         <div className='active-prompt'>
-          <div className='active-prompt__text'>Click anywhere to start!</div>
+          <div className='active-prompt__text'>~ click anywhere to start ~</div>
         </div>
       )}
       <button
@@ -275,10 +287,8 @@ function App() {
           handleKeyPress(fileContent.at(-1)!.text.at(-1)!.toUpperCase());
           timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
         }}
-        disabled={
-          typedState.contentIndex === fileContent.length - 1 &&
-          typedState.charIndex === fileContent.at(-1)!.text.length
-        }
+        disabled={isSkipDisabled}
+        style={{ cursor: isSkipDisabled ? 'not-allowed' : 'pointer' }}
       >
         Skip
       </button>

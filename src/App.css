@@ -12,6 +12,7 @@
 
 :root {
   --beige-pastel: rgb(242, 241, 238);
+  background-color: #fffae4;
 }
 
 .App {
@@ -38,7 +39,6 @@
   color: var(--beige-pastel);
   font-family: 'Special Elite';
   line-height: 150%;
-  width: 400px;
   text-align: center;
 }
 
@@ -63,6 +63,10 @@
 }
 
 .keyboard-area {
+  /* background-color: rgba(0, 0, 0, 0.6); */
+
+  padding-bottom: 40px;
+
   position: absolute;
   top: 50%;
 
@@ -89,7 +93,8 @@
   border: 1px solid black;
   border-bottom: none;
   padding: 30px 30px 5px 30px;
-  background-color: var(--beige-pastel);
+  /* background-color: var(--beige-pastel); */
+  background-color: white;
   /* background-image: url('https://img.freepik.com/free-photo/white-paper-texture-background_23-2151025702.jpg'); */
 
   text-wrap: wrap;
